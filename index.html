@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Paint</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <script src="js/sylvester.js" type="text/javascript"></script>
+    <script src="js/glUtils.js" type="text/javascript"></script>
+    <script src="js/objObject.js" type="text/javascript"></script>
+    <script src="js/shader.js" type="text/javascript"></script>
+    <script src="js/datgui.min.js" type="text/javascript"></script>
+    <script src="js/menu.js" type="text/javascript"></script>
+    <script src="js/brush.js" type="text/javascript"></script>
+    <script src="js/objloader.js" type="text/javascript"></script>
+    <script src="webgl.js" type="text/javascript"></script>
+
+
+    
+    <!-- Fragment shader program -->
+
+    <script id="flatcolor-fs" type="x-shader/x-fragment">
+       uniform highp vec3 color;
+
+        void main(void) {
+            gl_FragColor = vec4(color,1.0);  
+        }
+    </script>
+    
+    <!-- Vertex shader program -->
+    
+    <script id="flatcolor-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPos;
+
+      uniform mat4 uModelMatrix;
+      uniform mat4 uViewMatrix;
+      uniform mat4 uPMatrix;
+    
+      void main(void) {
+        // Set the size of the point
+        gl_PointSize = 3.0;
+        
+        gl_Position = uPMatrix * uViewMatrix * uModelMatrix *  vec4(aVertexPos.xyz, 1.0);;
+      }
+    </script>
+
+    
+
+    <!-- Fragment shader program -->
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+       uniform int light;
+       uniform sampler2D tex;
+       uniform int texture;
+
+       varying highp vec3 normal;
+       varying highp vec3 eye;
+       varying highp vec2 texCoord;
+       varying highp vec3 LightVector;
+       
+
+        void main(void) {
+            highp vec3 color;
+            if(light == 1){
+              highp vec3 ambientLight = vec3(0.15, 0.15, 0.15);
+              highp vec3 diffuseColor = vec3(0.7, 0.7, 0.7);
+              highp vec3 specularColor = vec3(0.7, 0.7, 0.7);
+
+              highp vec3 N = normalize(normal);
+  		        highp vec3 l = normalize(LightVector);
+
+              highp float NdotL = max(dot(N, l), 0.0);
+
+              //Setting ambient color
+              color = ambientLight;
+
+              if(NdotL > 0.0){
+
+                  //adding diffuse color
+                  color +=  NdotL * diffuseColor;
+
+                  highp vec3 halfVector = normalize(l + eye);
+                  highp float spec = pow(dot(halfVector, N), 300.0);
+
+                  //Using Phong Color
+                  color += NdotL * spec * specularColor;
+              }
+
+              
+              color = clamp(color, 0.0, 1.0);
+            }else{
+              color = vec3(1.0,1.0,1.0);
+            }
+
+            highp vec4 texcolor;
+            if(texture == 1)  texcolor = vec4(texture2D(tex, texCoord).xyz, 1.0);     
+            else              texcolor = vec4(1.0,1.0,1.0,1.0); 
+
+  		      gl_FragColor  = vec4(color, 1.0) * texcolor;   
+        }
+    </script>
+    
+    <!-- Vertex shader program -->
+    
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPos;
+      attribute vec3 aNormalPosition;
+      attribute vec2 aTexturePosition;
+
+      uniform mat4 uModelMatrix;
+      uniform mat4 uViewMatrix;
+      uniform mat4 uPMatrix;
+
+      varying vec3 normal;
+      varying vec3 eye;
+      varying vec2 texCoord;
+      varying vec3 LightVector;
+    
+      void main(void) {
+        //Passing texture coordinates
+        texCoord = aTexturePosition;
+
+        vec4 pos =  uViewMatrix * uModelMatrix *  vec4(aVertexPos.xyz, 1.0);
+
+        //Light direction
+        vec3 LightPosition  = vec3(-1.0, 1.0, -1.0);
+        LightVector = normalize(LightPosition - pos.xyz);
+
+        //Normal vector
+        normal = mat3(uViewMatrix * uModelMatrix) * aNormalPosition;
+        //Vector from world position to eye
+        eye = (vec4(0.0,0.0,0.0,1.0)-pos).xyz;
+
+        gl_Position = uPMatrix * pos;
+      }
+    </script>
+
+
+
+    <!-- Program to render object in the texture space (unfolded) -->
+    <script id="textureSpaceObjectRender-fs" type="x-shader/x-fragment">
+       //uniform highp vec3 ucolor = vec3(1.0,1.0,1.0);
+
+       highp vec3 ucolor = vec3(1.0,1.0,1.0);
+
+        void main(void) {
+            gl_FragColor = vec4(ucolor, 1.0);    
+        }
+    </script>
+    
+    <script id="textureSpaceObjectRender-vs" type="x-shader/x-vertex">
+      
+      attribute vec2 aTexturePosition;
+      
+      uniform mat4 uPMatrix;
+    
+      void main(void) {
+        gl_Position = uPMatrix * vec4(aTexturePosition.xy, 0.0, 1.0);
+      }
+    </script>
+
+    <!-- Program to render plane with texture  -->
+    <script id="textureRender-fs" type="x-shader/x-fragment">
+      //uniform highp vec3 color = vec3(1.0,1.0,1.0);
+      uniform sampler2D tex;
+
+      highp vec3 color = vec3(1.0,0.0,1.0);
+
+      varying highp vec2 texCoord;
+      
+      void main(void) {
+        //gl_FragColor = vec4(color, 1.0);    
+        gl_FragColor = vec4(texture2D(tex, texCoord).xyz, 1.0);    
+      }
+    </script>
+    
+    <script id="textureRender-vs" type="x-shader/x-vertex">
+      
+      attribute vec2 aVertexPos;
+      attribute vec2 aTexturePosition;
+      
+      uniform mat4 uPMatrix;
+      uniform mat4 uModel;
+
+      varying vec2 texCoord;
+    
+      void main(void) {
+        texCoord = aTexturePosition;
+        gl_Position = uPMatrix * uModel * vec4(aVertexPos.xy, 0.0, 1.0);
+      }
+    </script>
+
+
+
+
+     <!-- Program to paint the Texture-->
+    <script id="paint-fs" type="x-shader/x-fragment">
+      //uniform highp vec3 color = vec3(1.0,1.0,1.0);
+      uniform sampler2D tex;
+      uniform int bg;
+      uniform highp vec3 color;
+      uniform highp float intensity;
+
+      varying highp vec2 texCoord;
+      
+      void main(void) {
+        if(bg == 1) gl_FragColor = vec4(texture2D(tex, texCoord).xyz, 1.0);    
+        else gl_FragColor = intensity * vec4(texture2D(tex, texCoord).xyz * color, texture2D(tex, texCoord).w);
+      }
+    </script>
+    
+    <script id="paint-vs" type="x-shader/x-vertex">
+      
+      attribute vec2 aVertexPos;
+      attribute vec2 aTexturePosition;
+      
+      uniform mat4 uPMatrix;
+      uniform mat4 uModel;
+
+      varying vec2 texCoord;
+    
+      void main(void) {
+        texCoord = aTexturePosition;
+        gl_Position = uPMatrix * uModel * vec4(aVertexPos.xy, 0.0, 1.0);
+      }
+    </script>
+  </head>
+  
+  <body onload="start()" id="body">
+    <div id = "div">
+    <canvas id="glcanvas" width="640" height="480" oncontextmenu="return false;">
+      Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
+    </canvas>
+  </div>
+  <div style="visibility:hidden"><input id="openOBJ" type="file" accept=".obj" onchange="openFile(event)" ></div>
+  <div style="visibility:hidden"><input id="openTexture" type="file" accept="image/*" onchange="openTexture(event)" ></div>
+
+  </body>
+</html>
