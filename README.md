@@ -8,7 +8,7 @@ This is a 3D model painter develop for WebGL using HTML and Javascript. The idea
 The following externa libraries/ projects were used in the develop of this program:
 
 * [Sylvester.js 0.1.3](http://sylvester.jcoglan.com/), for matrix and vector manipulation
-* [dat.GUI] (https://github.com/dataarts/dat.gui), for easy GUI creation.
+* [dat.GUI](https://github.com/dataarts/dat.gui), for easy GUI creation.
 
 
 ## External libraries
