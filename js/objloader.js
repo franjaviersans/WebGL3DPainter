@@ -237,59 +237,7 @@ function parseOBJ(data, onLoad) {
     }
   }
 
-  function processMesh(mesh) {
-    if (fixedIndices.length) {
-      mesh.geometry.buffers.setTriangles(fixedIndices, (fixedVertices.length / 3) > EZ3.Math.MAX_USHORT);
-      mesh.geometry.buffers.setPositions(fixedVertices);
-
-      if (fixedUvs.length) {
-        mesh.geometry.buffers.setUVs(fixedUvs);
-        fixedUvs = [];
-      }
-
-      if (fixedNormals.length) {
-        mesh.geometry.buffers.setNormals(fixedNormals);
-        fixedNormals = [];
-      }
-
-      indices = [];
-      fixedIndices = [];
-      fixedVertices = [];
-
-      that.asset.add(mesh);
-
-      return new EZ3.Mesh();
-    }
-
-    return mesh;
-  }
-
-  /*function processLibraries(libraries, materials) {
-    var requests = new EZ3.RequestManager();
-    var baseUrl = EZ3.toBaseUrl(that.url);
-    var files = [];
-    var i;
-
-    for (i = 0; i < libraries.length; i++)
-      files.push(requests.addFileRequest(baseUrl + libraries[i], that.cached, that.crossOrigin));
-
-    requests.onComplete.add(function() {
-      for (i = 0; i < files.length; i++)
-        that._parseMTL(baseUrl, files[i].data, materials, requests);
-
-      requests.onComplete.removeAll();
-      requests.onComplete.add(function() {
-        onLoad(that.url, that.asset);
-      });
-
-      requests.start();
-    });
-
-    requests.start();
-  }*/
-
   function parse() {
-    //  var mesh = new EZ3.Mesh();
     var libraries = [];
     var materials = [];
     var lines = data.split('\n');
