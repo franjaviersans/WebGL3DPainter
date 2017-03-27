@@ -16,7 +16,7 @@ The following externa libraries/ projects were used in the develop of this progr
 The following is an screenshot of the program usage in 3D:
 
 <p align="center">
-  <img src ="./ScreenShot/render1.png" />
+  <img src ="./ScreenShot/render1.jpg" />
 </p>
 
 And a screenshot to paint the object in UV coordinates:
