@@ -224,16 +224,16 @@ OBJ.prototype = {
 
 		//Index buffers
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.BufferIndex);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indexData), gl.STATIC_DRAW);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.BufferIndexLines);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(LinesArray), gl.STATIC_DRAW);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(LinesArray), gl.STATIC_DRAW);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.BufferIndexVertex);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(VertexArray), gl.STATIC_DRAW);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(VertexArray), gl.STATIC_DRAW);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.BufferIndexVertexNormal);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexLineNormal), gl.STATIC_DRAW);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indexLineNormal), gl.STATIC_DRAW);
 
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
@@ -262,7 +262,7 @@ OBJ.prototype = {
 		
 
 		//gl.drawElements(gl.LINES, BufferIndex.numItems, gl.UNSIGNED_SHORT, 0);
-		gl.drawElements(gl.LINES, this.BufferIndexLines.numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.LINES, this.BufferIndexLines.numItems, gl.UNSIGNED_INT, 0);
 		
 	},
 	
@@ -288,7 +288,7 @@ OBJ.prototype = {
 		
 		
 		//Draw
-		gl.drawElements(gl.TRIANGLES, this.BufferIndex.numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.TRIANGLES, this.BufferIndex.numItems, gl.UNSIGNED_INT, 0);
 	},
 
 
@@ -302,7 +302,7 @@ OBJ.prototype = {
 		}		
 		
 		//Draw
-		gl.drawElements(gl.POINT, this.BufferIndexLines.numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.POINT, this.BufferIndexLines.numItems, gl.UNSIGNED_INT, 0);
 
 	},
 
@@ -317,7 +317,7 @@ OBJ.prototype = {
 		}		
 		
 		//Draw
-		gl.drawElements(gl.LINES, this.BufferIndexVertexNormal.numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.LINES, this.BufferIndexVertexNormal.numItems, gl.UNSIGNED_INT, 0);
 
 	},
 

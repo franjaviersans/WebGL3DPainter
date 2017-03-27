@@ -42,7 +42,7 @@ function createMenu() {
 
 
   var f2 = gui.addFolder('Texture');
-  f2.add(menuText, 'TexturedView').name('Enable Texture View');
+  f2.add(menuText, 'TexturedView').name('Texture View');
   f2.add(menuText, 'reload').name('Reload');
 
   var f3 = gui.addFolder('Object');
