@@ -67,6 +67,7 @@ function clickToPaint(xx,yy){
 // Figuratively, that is. There's nothing moving in this demo.
 //
 function start() {
+	
   canvas = document.getElementById("glcanvas");
   canvas.addEventListener("webglcontextlost", function(event) {
             event.preventDefault();
@@ -84,7 +85,8 @@ function start() {
   // Only continue if WebGL is available and working
   
   if (gl) {
-
+	var ext = gl.getExtension('OES_element_index_uint');
+  
     gl.viewport(0,0,WindowWidth,WindowHeight);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
