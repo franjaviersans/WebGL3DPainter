@@ -11,9 +11,9 @@ The following externa libraries/ projects were used in the develop of this progr
 * [dat.GUI](https://github.com/dataarts/dat.gui), for easy GUI creation.
 
 
-## External libraries
+## Screenshots
 
-The following is an screenshot of the program usage in 3D:
+The following is a screenshot of the program usage in 3D:
 
 <p align="center">
   <img src ="./ScreenShot/render1.jpg" />
