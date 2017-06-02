@@ -2,6 +2,7 @@
 
 This is a 3D model painter develop for WebGL using HTML and Javascript. The idea is that the user can load and paint and object both in 3D and in UV coordinates using mouse clicks. It allows the loading of .obj files with texture coordinates and the loading of texture images. Obj files must supply normal and texture coordinates for the program to work properly
 
+View the [live example](https://rawgit.com/franjaviersans/WebGL3DPainter/master/index.html) to see this program in action! 
 
 ## External libraries
 
